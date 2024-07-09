@@ -1,0 +1,55 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+```{r}
+# Load necessary libraries
+library(readxl)
+library(ggplot2)
+library(dplyr)
+```
+```{r}
+# Load the data from the Excel file
+file_path <- "C:/Users/ASUS/Downloads/bikes.xlsx"
+data <- read_excel(file_path)
+```
+```{r}
+
+# Display summary statistics
+summary(data)
+```
+```{r}
+
+# Filter the top 10 bikes by price
+top_10_bikes <- data %>%
+  arrange(desc(price)) %>%
+  head(10)
+```
+```{r}
+# Bar diagram of the top 10 bikes by price
+ggplot(top_10_bikes, aes(x = reorder(model, price), y = price)) +
+  geom_bar(stat = "identity", fill = "blue") +
+  coord_flip() +
+  labs(title = "Top 10 Bikes by Price", x = "Model", y = "Price") +
+  theme_minimal()
+```
+```{r}
+# Pie chart of the distribution of bikes by category1
+category1_distribution <- data %>%
+  group_by(category1) %>%
+  summarize(count = n()) %>%
+  mutate(percentage = count / sum(count) * 100)
+```
+```{r}
+ggplot(category1_distribution, aes(x = "", y = percentage, fill = category1)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar(theta = "y") +
+  labs(title = "Distribution of Bikes by Category1", x = "", y = "") +
+  theme_minimal()
+```
+```{r}
+# Save the plots
+ggsave("top_10_bikes_bar.png")
+ggsave("category1_distribution_pie.png")
+```
